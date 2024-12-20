@@ -9,7 +9,7 @@ ext-modules = [{name = "pyevil._evil",sources = ["pyevil/_evil.c"], extra-compil
 
 [project]
 name = "pyevil"
-version = "0.0.5"
+version = "0.0.6"
 description = "EVIL PYTHON VOODOO"
 readme = "README.md"
 license = {file = "LICENSE"}

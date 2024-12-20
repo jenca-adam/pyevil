@@ -1,6 +1,7 @@
+#define PY_SSIZE_T_CLEAN
 #include "Python.h"
 #include <stdlib.h>
-
+#include <string.h>
 Py_ssize_t getsizeof_fallback(PyObject *obj) {
   // since _PySys_GetSizeOf is not public
   PyObject *sys_module = PyImport_ImportModule("sys");
@@ -41,6 +42,7 @@ PyObject *rawdump(PyObject *self, PyObject *o) {
   if (osize == -1) {
     return NULL;
   }
+  abort();
   char *mem = malloc(osize * sizeof(char)); // No need for terminator since we
                                             // use PyBytes_FromStringAndSize
   memcpy(mem, o, osize);                    // pure evil
@@ -162,6 +164,23 @@ PyObject *settupleitem(PyObject *self, PyObject *args){
   Py_SET_REFCNT(tup, refcnt);
   Py_RETURN_NONE;
 }
+PyObject *setbytesitem(PyObject *self, PyObject *args){
+  PyBytesObject *bts;
+  Py_ssize_t index;
+  unsigned char q;
+  if(!PyArg_ParseTuple(args,"O!nc", &PyBytes_Type, &bts, &index, &q)){
+  	return NULL;
+  }
+  Py_ssize_t btsz = PyBytes_Size((PyObject*)bts);
+  if(index<0 || index>=btsz){
+  	PyErr_SetString(PyExc_IndexError, "bytes assignment index out of range");
+  	return NULL;
+  }
+  bts->ob_sval[index]=q;
+  Py_RETURN_NONE;
+
+  
+}
 static PyMethodDef EvilMethods[] = {
     {"id2obj", id2obj, METH_O, NULL},
     {"rawdump", rawdump, METH_O, NULL},
@@ -176,6 +195,7 @@ static PyMethodDef EvilMethods[] = {
     {"setsize", setsize, METH_VARARGS, NULL},
     {"forceset", forceset, METH_VARARGS, NULL},
     {"settupleitem", settupleitem, METH_VARARGS, NULL},
+    {"setbytesitem", setbytesitem, METH_VARARGS, NULL},
     {NULL, NULL, 0, NULL} /* Sentinel */
 };
 static struct PyModuleDef _evilmodule = {PyModuleDef_HEAD_INIT, "_evil", NULL,

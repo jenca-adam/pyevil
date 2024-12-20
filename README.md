@@ -88,5 +88,11 @@ To avoid data being overwritten, both objects must have the same size.
 
 ### `settupleitem()`
 
-Sets a tuple's item.
+Sets a `tuple`'s item.
 
+### `setbytesitem()`
+
+Sets a `bytes`'s item.
+
+Note that this **doesn't** change the hash.
+ 
