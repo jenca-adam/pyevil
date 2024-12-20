@@ -3,3 +3,4 @@
 vgcore*
 *__pycache__*
 *.egg-info
+build

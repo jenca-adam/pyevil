@@ -7,6 +7,9 @@ A python module that groups together a bunch of voodoo c black magic functions t
 Almost every function in this module is **dangerous** and can cause **SEGFAULTS** or **MEMORY LEAKS**.
 **NEVER** use this in production.
 
+## Installation
+1. git clone this repo
+2. python -m pip install .
 ## Functions
 
 ### `id2obj()`
