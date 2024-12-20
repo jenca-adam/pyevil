@@ -122,6 +122,7 @@ PyObject *forceset(PyObject *self, PyObject *args) {
   if (!PyArg_ParseTuple(args, "OO", &tgt, &o)) {
     return NULL;
   }
+  Py_ssize_t refcnt = Py_REFCNT(tgt);
   Py_ssize_t tsz = getsizeof_fallback(tgt);
   Py_ssize_t osz = getsizeof_fallback(o);
   if (osz == -1 || tsz == -1) {
@@ -134,7 +135,7 @@ PyObject *forceset(PyObject *self, PyObject *args) {
 
   memcpy((void *)tgt, (void *)o, osz);
   memcpy(tgt, o, osz);
-  Py_INCREF(o);
+  Py_SET_REFCNT(tgt,refcnt);
   Py_RETURN_NONE;
 }
 

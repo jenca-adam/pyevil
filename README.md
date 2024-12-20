@@ -82,7 +82,4 @@ Setting the size of an object that doesn't have a size will create a malformed o
 
 Directly sets the value of an object to the value of another object.
 To avoid data being overwritten, both objects must have the same size.
-
-Can cause serious refcount issues, so I'd advise you to call `mk_immortal()` on the target after each use. (setting the kwarg `immortalize` to `True` will do this for you).
-I know this is not how you solve problems but I am too lazy to fix the reference counting. 
-**CAN ALSO CRASH THE PYTHON SHELL!**
+**CAN CRASH THE PYTHON SHELL!**
