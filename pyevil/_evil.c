@@ -134,7 +134,6 @@ PyObject *forceset(PyObject *self, PyObject *args) {
   }
 
   memcpy((void *)tgt, (void *)o, osz);
-  memcpy(tgt, o, osz);
   Py_SET_REFCNT(tgt,refcnt);
   Py_RETURN_NONE;
 }
