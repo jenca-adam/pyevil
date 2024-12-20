@@ -2,3 +2,4 @@
 *.dll
 vgcore*
 *__pycache__*
+*.egg-info

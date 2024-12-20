@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["pyevil"]
+
+ext-modules = [{name = "pyevil._evil",sources = ["pyevil/_evil.c"], extra-compile-args = ["-Wall","-pedantic","-O3"]}]
+
+[project]
+name = "pyevil"
+version = "0.0.2"
+description = "EVIL PYTHON VOODOO"
+readme = "README.md"
+license = {file = "LICENSE.txt"}
+keywords = ["c", "evil", "voodoo", "unsafe"]
+authors = [{name="Adam Jenca", email="jenca.adam@gmail.com"}]
+maintainers = [{name="Adam Jenca", email="jenca.adam@gmail.com"}]
+classifiers = [
+	"Development Status :: 3 - Alpha",
+	"Programming Language :: C",
+	"Programming Language :: Python :: 3 :: Only",
+	"Topic :: Software Development :: Libraries :: Python Modules",
+	"Intended Audience :: Developers"
+	]
+
+[project.urls]
+"Homepage" = "https://github.com/jenca-adam/pyevil"
+"Bug Reports" = "https://github.com/jenca-adam/pyevil/issues"
+"Source" = "https://github.com/jenca-adam/pyevil"

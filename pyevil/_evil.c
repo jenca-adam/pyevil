@@ -1,5 +1,29 @@
 #include "Python.h"
 #include <stdlib.h>
+
+Py_ssize_t getsizeof_fallback(PyObject *obj) {
+  // since _PySys_GetSizeOf is not public
+  PyObject *sys_module = PyImport_ImportModule("sys");
+  if (sys_module == NULL) {
+    return -1;
+  }
+
+  // Get the sys.getsizeof function
+  PyObject *getsizeof_func = PyObject_GetAttrString(sys_module, "getsizeof");
+  if (getsizeof_func == NULL) {
+    Py_XDECREF(sys_module);
+    return -1;
+  }
+  PyObject *size_pyobj = PyObject_CallFunctionObjArgs(getsizeof_func, obj, NULL);
+  Py_XDECREF(sys_module);
+  Py_XDECREF(getsizeof_func);
+  if (!size_pyobj) {
+    return -1;
+  }
+  Py_ssize_t size = PyLong_AsSize_t(size_pyobj);
+  Py_XDECREF(size_pyobj);
+  return size;
+}
 PyObject *id2obj(PyObject *self, PyObject *o) {
   if (!PyLong_Check(o)) {
     PyErr_SetString(PyExc_TypeError, "id2obj arg must be an int");
@@ -13,7 +37,10 @@ PyObject *id2obj(PyObject *self, PyObject *o) {
   return (PyObject *)id;
 }
 PyObject *rawdump(PyObject *self, PyObject *o) {
-  size_t osize = _PySys_GetSizeOf(o);
+  Py_ssize_t osize = getsizeof_fallback(o);
+  if (osize == -1) {
+    return NULL;
+  }
   char *mem = malloc(osize * sizeof(char)); // No need for terminator since we
                                             // use PyBytes_FromStringAndSize
   memcpy(mem, o, osize);                    // pure evil
@@ -48,8 +75,14 @@ PyObject *setrefcount(PyObject *self, PyObject *args) {
   return Py_None;
 }
 PyObject *mk_immortal(PyObject *self, PyObject *o) {
+#ifdef _Py_IMMORTAL_REFCNT
   o->ob_refcnt = _Py_IMMORTAL_REFCNT;
   return Py_None;
+#else
+  PyErr_SetString(PyExc_SystemError,
+                  "immortal objects don't exist in this version of Python");
+  return NULL;
+#endif
 }
 PyObject *settype(PyObject *self, PyObject *args) {
   PyObject *o;
@@ -81,9 +114,11 @@ PyObject *forceset(PyObject *self, PyObject *args) {
   if (!PyArg_ParseTuple(args, "OO", &tgt, &o)) {
     return NULL;
   }
-  Py_ssize_t tsz = _PySys_GetSizeOf(tgt);
-
-  Py_ssize_t osz = _PySys_GetSizeOf(o);
+  Py_ssize_t tsz = getsizeof_fallback(tgt);
+  Py_ssize_t osz = getsizeof_fallback(o);
+  if (osz == -1 || tsz == -1) {
+    return NULL;
+  }
   if (osz != tsz) {
     PyErr_SetString(PyExc_ValueError, "Objects must have the same size");
     return NULL;
