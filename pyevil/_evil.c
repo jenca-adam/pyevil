@@ -42,7 +42,6 @@ PyObject *rawdump(PyObject *self, PyObject *o) {
   if (osize == -1) {
     return NULL;
   }
-  abort();
   char *mem = malloc(osize * sizeof(char)); // No need for terminator since we
                                             // use PyBytes_FromStringAndSize
   memcpy(mem, o, osize);                    // pure evil
