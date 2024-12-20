@@ -48,3 +48,6 @@ def forceset(tgt, obj, immortalize=False):
 
 def settupleitem(tup, index, obj):
     _evil.settupleitem(tup, index, obj)
+
+def setbytesitem(bts, index, char):
+    _evil.settupleitem(bts, index, char)
