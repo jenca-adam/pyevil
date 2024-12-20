@@ -43,5 +43,5 @@ def setsize(obj, sz):
 
 def forceset(tgt, obj, immortalize=False):
     _evil.forceset(tgt, obj)
-    if immortalize:
+    if immortalize and _evil.has_immortal():
         mk_immortal(tgt)

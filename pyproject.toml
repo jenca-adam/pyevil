@@ -9,10 +9,10 @@ ext-modules = [{name = "pyevil._evil",sources = ["pyevil/_evil.c"], extra-compil
 
 [project]
 name = "pyevil"
-version = "0.0.2"
+version = "0.0.3"
 description = "EVIL PYTHON VOODOO"
 readme = "README.md"
-license = {file = "LICENSE.txt"}
+license = {file = "LICENSE"}
 keywords = ["c", "evil", "voodoo", "unsafe"]
 authors = [{name="Adam Jenca", email="jenca.adam@gmail.com"}]
 maintainers = [{name="Adam Jenca", email="jenca.adam@gmail.com"}]

@@ -72,12 +72,19 @@ PyObject *setrefcount(PyObject *self, PyObject *args) {
     return NULL;
   }
   o->ob_refcnt = refcnt;
-  return Py_None;
+  Py_RETURN_NONE;
+}
+PyObject *has_immortal(PyObject *self, PyObject *noargs){
+  #ifdef _Py_IMMORTAL_REFCNT
+  Py_RETURN_TRUE;
+  #else
+  Py_RETURN_FALSE;
+  #endif
 }
 PyObject *mk_immortal(PyObject *self, PyObject *o) {
 #ifdef _Py_IMMORTAL_REFCNT
   o->ob_refcnt = _Py_IMMORTAL_REFCNT;
-  return Py_None;
+  Py_RETURN_NONE;
 #else
 #warning "immortal objects don't exist in this version of Python; mk_immortal() and eternize() will not work"
   PyErr_SetString(PyExc_SystemError,
@@ -96,7 +103,7 @@ PyObject *settype(PyObject *self, PyObject *args) {
     return NULL;
   }
   o->ob_type = (PyTypeObject *)type;
-  return Py_None;
+  Py_RETURN_NONE;
 }
 PyObject *getsize(PyObject *self, PyObject *o) {
   return PyLong_FromSsize_t(((PyVarObject *)o)->ob_size);
@@ -108,7 +115,7 @@ PyObject *setsize(PyObject *self, PyObject *args) {
     return NULL;
   }
   ((PyVarObject *)o)->ob_size = newsize;
-  return Py_None;
+  Py_RETURN_NONE;
 }
 PyObject *forceset(PyObject *self, PyObject *args) {
   PyObject *tgt, *o;
@@ -128,7 +135,7 @@ PyObject *forceset(PyObject *self, PyObject *args) {
   memcpy((void *)tgt, (void *)o, osz);
   memcpy(tgt, o, osz);
   Py_INCREF(o);
-  return Py_None;
+  Py_RETURN_NONE;
 }
 
 static PyMethodDef EvilMethods[] = {
@@ -138,6 +145,7 @@ static PyMethodDef EvilMethods[] = {
     {"addrof", addrof, METH_O, NULL},
     {"getrefcount", getrefcount, METH_O, NULL},
     {"setrefcount", setrefcount, METH_VARARGS, NULL},
+    {"has_immortal", has_immortal, METH_NOARGS, NULL},
     {"mk_immortal", mk_immortal, METH_O, NULL},
     {"settype", settype, METH_VARARGS, NULL},
     {"getsize", getsize, METH_O, NULL},
