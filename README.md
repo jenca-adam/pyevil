@@ -1,6 +1,6 @@
 # `pyevil`
 
-A python module that groups together a bunch of voodoo c black magic function that can be useful when dealing with stuff at the very lowest of low levels of Python programming.
+A python module that groups together a bunch of voodoo c black magic functions that can be useful when dealing with stuff at the very lowest of low levels of Python programming.
 
 ## A disclaimer
 
