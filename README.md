@@ -78,8 +78,15 @@ Sets the `ob_size` of an object.
 Decreasing will likely cause memory leaks, increasing will likely cause segfaults.
 
 Setting the size of an object that doesn't have a size will create a malformed object.
+
 ### `forceset()`
 
 Directly sets the value of an object to the value of another object.
 To avoid data being overwritten, both objects must have the same size.
+
 **CAN CRASH THE PYTHON SHELL!**
+
+### `settupleitem()`
+
+Sets a tuple's item.
+

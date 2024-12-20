@@ -108,6 +108,7 @@ PyObject *settype(PyObject *self, PyObject *args) {
 PyObject *getsize(PyObject *self, PyObject *o) {
   return PyLong_FromSsize_t(((PyVarObject *)o)->ob_size);
 }
+
 PyObject *setsize(PyObject *self, PyObject *args) {
   PyObject *o;
   Py_ssize_t newsize;
@@ -117,6 +118,7 @@ PyObject *setsize(PyObject *self, PyObject *args) {
   ((PyVarObject *)o)->ob_size = newsize;
   Py_RETURN_NONE;
 }
+
 PyObject *forceset(PyObject *self, PyObject *args) {
   PyObject *tgt, *o;
   if (!PyArg_ParseTuple(args, "OO", &tgt, &o)) {
@@ -132,12 +134,34 @@ PyObject *forceset(PyObject *self, PyObject *args) {
     PyErr_SetString(PyExc_ValueError, "Objects must have the same size");
     return NULL;
   }
-
   memcpy((void *)tgt, (void *)o, osz);
   Py_SET_REFCNT(tgt,refcnt);
   Py_RETURN_NONE;
 }
 
+PyObject *settupleitem(PyObject *self, PyObject *args){
+  PyObject *tup, *o;
+  Py_ssize_t index;
+  if(!PyArg_ParseTuple(args,"O!nO",&PyTuple_Type,&tup,&index,&o)){
+  	return NULL;
+  }
+  // catch index errors before they mess stuff up
+  Py_ssize_t tupsz = PyTuple_Size(tup);
+  if(tupsz==-1){
+	  return NULL;
+  }
+  if (index<0 || index>=tupsz){
+  	PyErr_SetString(PyExc_IndexError, "tuple assignment index out of range");
+	return NULL;
+  }
+  Py_ssize_t refcnt = Py_REFCNT(tup);
+  Py_SET_REFCNT(tup,1);
+  if(PyTuple_SetItem(tup, index, o)==-1){
+  	return NULL;
+  }
+  Py_SET_REFCNT(tup, refcnt);
+  Py_RETURN_NONE;
+}
 static PyMethodDef EvilMethods[] = {
     {"id2obj", id2obj, METH_O, NULL},
     {"rawdump", rawdump, METH_O, NULL},
@@ -151,6 +175,7 @@ static PyMethodDef EvilMethods[] = {
     {"getsize", getsize, METH_O, NULL},
     {"setsize", setsize, METH_VARARGS, NULL},
     {"forceset", forceset, METH_VARARGS, NULL},
+    {"settupleitem", settupleitem, METH_VARARGS, NULL},
     {NULL, NULL, 0, NULL} /* Sentinel */
 };
 static struct PyModuleDef _evilmodule = {PyModuleDef_HEAD_INIT, "_evil", NULL,

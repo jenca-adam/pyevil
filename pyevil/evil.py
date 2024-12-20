@@ -45,3 +45,6 @@ def forceset(tgt, obj, immortalize=False):
     _evil.forceset(tgt, obj)
     if immortalize and _evil.has_immortal():
         mk_immortal(tgt)
+
+def settupleitem(tup, index, obj):
+    _evil.settupleitem(tup, index, obj)
