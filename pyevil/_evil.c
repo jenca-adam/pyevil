@@ -79,6 +79,7 @@ PyObject *mk_immortal(PyObject *self, PyObject *o) {
   o->ob_refcnt = _Py_IMMORTAL_REFCNT;
   return Py_None;
 #else
+#warning "immortal objects don't exist in this version of Python; mk_immortal() and eternize() will not work"
   PyErr_SetString(PyExc_SystemError,
                   "immortal objects don't exist in this version of Python");
   return NULL;
