@@ -12,7 +12,7 @@ Almost every function in this module is **dangerous** and can cause **SEGFAULTS*
 2. python -m pip install .
 ## Functions
 
-### `id2obj()`
+### `dereference()`
 
 Converts an address to a Python object.
 
@@ -95,4 +95,8 @@ Sets a `tuple`'s item.
 Sets a `bytes`'s item.
 
 Note that this **doesn't** change the hash.
+
+### `untrack()`
+
+Calls `PyObject_GC_UnTrack()` on the argument. 
  

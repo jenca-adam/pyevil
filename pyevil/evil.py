@@ -2,14 +2,14 @@ from . import _evil
 import ctypes
 from collections.abc import Collection
 
-def id2obj(addr):
-    return _evil.id2obj(addr)
+def dereference(addr):
+    return _evil.dereference(addr)
 
 def addrof(obj):
     return _evil.addrof(obj)
 
 def rawdump(obj):
-    return _evil.rawdump()
+    return _evil.rawdump(obj)
 
 def rawload(mem):
     return _evil.rawload(mem)
@@ -51,3 +51,6 @@ def settupleitem(tup, index, obj):
 
 def setbytesitem(bts, index, char):
     _evil.settupleitem(bts, index, char)
+
+def untrack(obj):
+    _evil.untrack(obj)

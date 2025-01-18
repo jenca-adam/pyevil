@@ -25,9 +25,9 @@ Py_ssize_t getsizeof_fallback(PyObject *obj) {
   Py_XDECREF(size_pyobj);
   return size;
 }
-PyObject *id2obj(PyObject *self, PyObject *o) {
+PyObject *dereference(PyObject *self, PyObject *o) {
   if (!PyLong_Check(o)) {
-    PyErr_SetString(PyExc_TypeError, "id2obj arg must be an int");
+    PyErr_SetString(PyExc_TypeError, "dereference arg must be an int");
     return NULL;
   }
   long id = PyLong_AsLong(o);
@@ -177,11 +177,13 @@ PyObject *setbytesitem(PyObject *self, PyObject *args){
   }
   bts->ob_sval[index]=q;
   Py_RETURN_NONE;
-
-  
+}
+PyObject *untrack(PyObject *self, PyObject *o){
+  PyObject_GC_UnTrack(o);
+  Py_RETURN_NONE;
 }
 static PyMethodDef EvilMethods[] = {
-    {"id2obj", id2obj, METH_O, NULL},
+    {"dereference", dereference, METH_O, NULL},
     {"rawdump", rawdump, METH_O, NULL},
     {"rawload", rawload, METH_O, NULL},
     {"addrof", addrof, METH_O, NULL},
@@ -195,6 +197,7 @@ static PyMethodDef EvilMethods[] = {
     {"forceset", forceset, METH_VARARGS, NULL},
     {"settupleitem", settupleitem, METH_VARARGS, NULL},
     {"setbytesitem", setbytesitem, METH_VARARGS, NULL},
+    {"untrack", untrack, METH_O, NULL},
     {NULL, NULL, 0, NULL} /* Sentinel */
 };
 static struct PyModuleDef _evilmodule = {PyModuleDef_HEAD_INIT, "_evil", NULL,
